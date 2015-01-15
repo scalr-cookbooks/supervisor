@@ -85,6 +85,7 @@ end
 
 def enable_service
   e = execute "supervisorctl update" do
+    command "supervisorctl -c '#{node['supervisor']['conffile']}' update"
     action :nothing
     user "root"
   end
@@ -107,6 +108,7 @@ end
 
 def disable_service
   execute "supervisorctl update" do
+    command "supervisorctl -c '#{node['supervisor']['conffile']}' update"
     action :nothing
     user "root"
   end
@@ -118,7 +120,7 @@ def disable_service
 end
 
 def supervisorctl(action)
-  cmd = "supervisorctl #{action} #{cmd_line_args} | grep -v ERROR"
+  cmd = "supervisorctl -c '#{node['supervisor']['conffile']}' #{action} #{cmd_line_args} | grep -v ERROR"
   result = Mixlib::ShellOut.new(cmd).run_command
   # Since we append grep to the command
   # The command will have an exit code of 1 upon failure
@@ -135,7 +137,7 @@ def cmd_line_args
 end
 
 def get_current_state(service_name)
-  result = Mixlib::ShellOut.new("supervisorctl status").run_command
+  result = Mixlib::ShellOut.new("supervisorctl -c '#{node['supervisor']['conffile']}' status").run_command
   match = result.stdout.match("(^#{service_name}(\\:\\S+)?\\s*)([A-Z]+)(.+)")
   if match.nil?
     "UNAVAILABLE"

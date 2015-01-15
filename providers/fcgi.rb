@@ -20,6 +20,7 @@
 
 action :enable do
   execute "supervisorctl update" do
+    command "supervisorctl -c '#{node['supervisor']['conffile']}' update"
     action :nothing
     user "root"
   end
@@ -37,6 +38,7 @@ end
 
 action :disable do
   execute "supervisorctl update" do
+    command "supervisorctl -c '#{node['supervisor']['conffile']}' update"
     action :nothing
     user "root"
   end
@@ -48,25 +50,25 @@ action :disable do
 end
 
 action :start do
-  execute "supervisorctl start #{new_resource.program_name}" do
+  execute "supervisorctl -c '#{node['supervisor']['conffile']}' start #{new_resource.program_name}" do
     user "root"
   end
 end
 
 action :stop do
-  execute "supervisorctl stop #{new_resource.program_name}" do
+  execute "supervisorctl -c '#{node['supervisor']['conffile']}' stop #{new_resource.program_name}" do
     user "root"
   end
 end
 
 action :restart  do
-  execute "supervisorctl restart #{new_resource.program_name}" do
+  execute "supervisorctl -c '#{node['supervisor']['conffile']}' restart #{new_resource.program_name}" do
     user "root"
   end
 end
 
 action :reload  do
-  execute "supervisorctl restart #{new_resource.program_name}" do
+  execute "supervisorctl -c '#{node['supervisor']['conffile']}' restart #{new_resource.program_name}" do
     user "root"
   end
 end
